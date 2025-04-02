@@ -2,7 +2,8 @@ import pygame
 import random
 import time
 from collections import deque
-#test commit
+import heapq
+
 # Constants
 WIDTH, HEIGHT = 500, 500
 ROWS, COLS = 10, 10
@@ -80,6 +81,29 @@ def bfs_shortest_path(graph, start, end):
 
     return None
 
+# A Start Algorithm
+def a_star(graph,start,end):
+    pq = []
+    heapq.heappush(pq,(0,start,[]))
+    visited = set()
+    while pq:
+        cost, node, path = heapq.heappop(pq)
+        if node in visited:
+            continue
+
+        visited.add(node)
+        new_path = path + [node]
+        if node == end:
+            return new_path
+
+        for neighbor in graph[node]:
+            if neighbor not in visited:
+                g = len(new_path)  # Cost from start
+                h = abs(end[0] - neighbor[0]) + abs(end[1] - neighbor[1])  # Manhattan Distance
+                f = g + h
+                heapq.heappush(pq, (f, neighbor, new_path))
+    return None
+
 # Draw Grid
 def draw_grid(grid):
     for i in range(ROWS):
@@ -103,7 +127,7 @@ def animate_path(path):
 grid = create_grid()
 graph = convert_to_graph(grid)
 start, end = (0, 0), (ROWS - 1, COLS - 1)
-shortest_path = bfs_shortest_path(graph, start, end)
+shortest_path = a_star(graph, start, end)
 
 running = True
 while running:
