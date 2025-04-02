@@ -17,6 +17,7 @@ class MazeEnv:
     
     def reset(self):
         self.state = self.start
+        return self.state
 
     def step(self, action):
         
@@ -35,7 +36,7 @@ class MazeEnv:
         
         return self.state, -0.1, False # Small penalty for each move (to encourage shorter paths)
 
-grid = [
+env = MazeEnv([
     ['S', '.', '.', '.', '█', '.', '.', '.', '.', '.'],
     ['█', '█', '.', '█', '.', '█', '█', '█', '.', '.'],
     ['.', '.', '.', '.', '.', '.', '.', '█', '.', '.'],
@@ -46,10 +47,45 @@ grid = [
     ['█', '█', '█', '█', '.', '█', '█', '█', '█', '█'],
     ['.', '.', '.', '.', '.', '.', '.', '█', '.', '.'],
     ['█', '.', '█', '█', '.', '█', '.', '.', '.', 'E']
-]
+])
 
+# Initialize Q-table
+Q = {}
+for i in range(10):
+    for j in range(10):
+        Q[(i, j)] = [0, 0, 0, 0]  # 4 possible moves
 
-env = MazeEnv(grid)
-print("Starting Position:", env.reset())
-new_state, reward, done = env.step(3)
-print("New State:", new_state, "Reward:", reward, "Done:", done)
+# Q-learning parameters
+alpha = 0.1  # Learning rate
+gamma = 0.9  # Discount factor
+epsilon = 0.1  # Exploration-exploitation tradeoff
+
+for episode in range(500):
+    state = env.reset()
+    done = False
+    
+    while not done:
+
+        if random.uniform(0,1)<epsilon:
+            action = random.choice(list(ACTIONS.keys()))
+        else:
+            action = np.argmax(Q[state])
+        
+
+        new_state, reward, done = env.step(action)
+
+        Q[state][action] = Q[state][action] + alpha * (
+            reward + gamma * max(Q[new_state]) - Q[state][action]
+        )
+
+        state = new_state
+
+    if episode % 100 == 0:
+        print(f"Episode {episode} completed.")
+
+print("Training complete!")
+
+for i in range(10):
+    for j in range(10):
+        print("%.2f" % max(Q[(i,j)]), end=' ')
+    print()
