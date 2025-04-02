@@ -18,6 +18,22 @@ class MazeEnv:
     def reset(self):
         self.state = self.start
 
+    def step(self, action):
+        
+        x,y = self.state
+        dx,dy = ACTIONS[action]
+        new_x,new_y = x+dx,y+dy
+
+        if 0<=new_x<10 and 0<=new_y<10 and self.grid[new_x][new_y] != '█':
+            self.state = (new_x,new_y)
+
+        else:
+            return self.state, -1, False # giving penality for mistakes
+
+        if self.state == self.goal:
+            return self.state, 10, True 
+        
+        return self.state, -0.1, False # Small penalty for each move (to encourage shorter paths)
 
 grid = [
     ['S', '.', '.', '.', '█', '.', '.', '.', '.', '.'],
@@ -35,3 +51,5 @@ grid = [
 
 env = MazeEnv(grid)
 print("Starting Position:", env.reset())
+new_state, reward, done = env.step(3)
+print("New State:", new_state, "Reward:", reward, "Done:", done)
