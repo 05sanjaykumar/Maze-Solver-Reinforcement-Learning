@@ -29,6 +29,10 @@ b2 = np.zeros((1, 1))
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
+
+def sigmoid_derivative(x):
+    return x * (1 - x) 
+
 # Forward pass
 def forward(X, W1, b1, W2, b2):
     z1 = np.dot(X, W1) + b1      # Input to hidden layer
@@ -37,5 +41,23 @@ def forward(X, W1, b1, W2, b2):
     a2 = sigmoid(z2)             # Final prediction (output layer)
     return a1, a2
 
-a1, a2 = forward(X, W1, b1, W2, b2)
-print("Predictions:\n", a1)
+# a1, a2 = forward(X, W1, b1, W2, b2)
+# print("Predictions:\n", a1)
+
+
+class NeuralNetwork:
+    def __init__(self):
+        self.input_size = 2
+        self.hidden_size = 2
+        self.output_size = 1
+
+        self.W1 = np.random.randn(self.input_size, self.hidden_size)
+        self.W2 = np.random.randn(self.hidden_size, self.output_size)
+
+    def predict(self, X):
+        self.z1 = np.dot(X, self.W1)
+        self.a1 = sigmoid(self.z1)
+        self.z2 = np.dot(self.a1, self.W2)
+        output = sigmoid(self.z2)
+        return output
+    
