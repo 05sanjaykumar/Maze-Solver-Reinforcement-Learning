@@ -61,3 +61,31 @@ class NeuralNetwork:
         output = sigmoid(self.z2)
         return output
     
+    def train(self,X,y,epochs=50000, lr=0.1):
+        for epoch in range(epochs):
+            # --- FORWARD ---
+            output = self.predict(X)
+
+            # --- BACKPROP ---
+            error = y - output
+            d_output = error * sigmoid_derivative(output)
+
+            error_hidden = d_output.dot(self.W2.T)
+            d_hidden = error_hidden * sigmoid_derivative(self.a1)
+
+            # --- UPDATE WEIGHTS ---
+            self.W2 += self.a1.T.dot(d_output) * lr
+            self.W1 += X.T.dot(d_hidden) * lr
+
+            # Print error occasionally
+            if epoch % 1000 == 0:
+                loss = np.mean(np.square(error))
+                print(f"Epoch {epoch}, Loss: {loss:.4f}")
+
+
+nn = NeuralNetwork()
+nn.train(X, y)
+
+# Predict after training
+print("Predictions:")
+print(nn.predict(X))
