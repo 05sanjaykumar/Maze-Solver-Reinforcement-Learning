@@ -1,5 +1,8 @@
 import numpy as np
 import random
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
 
 class MazeEnv:
     def __init__(self, grid=None):
@@ -59,3 +62,18 @@ class MazeEnv:
                     row += self.grid[i][j] + ' '
             print(row)
         print()
+
+class DQN(nn.Module):
+    def __init__(self):
+        super(DQN, self).__init__()
+        self.fc1 = nn.Linear(2,32)
+        self.fc2 = nn.Linear(32,4)
+
+    def forward(self, x):
+        x = F.relu(self.fc1(x))
+        return self.fc2(x)
+    
+model = DQN()
+sample_state = torch.tensor([3.0, 5.0])  # agent at (3, 5)
+q_values = model(sample_state)
+print("Q-values:", q_values)
