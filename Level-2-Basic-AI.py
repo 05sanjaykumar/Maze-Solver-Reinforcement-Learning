@@ -1,3 +1,5 @@
+#Base using Bellmans equation to solve our maze
+
 import numpy as np
 import random
 

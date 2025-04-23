@@ -1,3 +1,6 @@
+#Here are some basics using using bfs, dfs, etc using normal learnings.
+
+
 import pygame
 import random
 import time

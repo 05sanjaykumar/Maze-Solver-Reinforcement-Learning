@@ -1,3 +1,5 @@
+#To Create neural Network and seeing behind the scenes of working
+
 import numpy as np
 # Inputs (XOR truth table)
 X = np.array([
