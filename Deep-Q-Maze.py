@@ -20,13 +20,13 @@ LEARNING_RATE = 0.001
 class QNetwork(nn.Module):
     def __init__(self, input_size, output_size):
         super(QNetwork, self).__init__()
-        self.fc1 = nn.Linear(input_size, 64)
-        self.fc2 = nn.Linear(64, 64)
-        self.out = nn.Linear(64, output_size)
+        self.fc1 = nn.Linear(input_size, 64) # input and neuron size (100-input, number of neurons-64)
+        self.fc2 = nn.Linear(64, 64) # input and neuron size (number of neurons-64, number of neurons-64)
+        self.out = nn.Linear(64, output_size)# input and neuron size (number of neurons-64, output-4 )
 
     def forward(self, x):
-        x = torch.relu(self.fc1(x))
-        x = torch.relu(self.fc2(x))
+        x = torch.relu(self.fc1(x)) # np.dot(X, W1) + b1 (NumPy) ≈ self.fc1(x) (PyTorch Linear Layer)
+        x = torch.relu(self.fc2(x)) # sigmoid(z1) (NumPy) ≈ torch.relu(self.fc1(x)) (PyTorch + ReLU)
         return self.out(x)
 
 # --- Environment (simplified placeholder) ---
@@ -51,9 +51,9 @@ def take_action(state, action):
     return state, -1, False  # Wall hit
 
 def state_to_tensor(state):
-    x = torch.zeros(GRID_SIZE * GRID_SIZE)
+    x = torch.zeros(GRID_SIZE * GRID_SIZE) 
     x[state[0]*GRID_SIZE + state[1]] = 1.0
-    return x.unsqueeze(0)
+    return x.unsqueeze(0) # unsqueze converts from tensor([0.,0.,]) to tensor([[0.,0.,]])
 
 # --- Setup ---
 q_net = QNetwork(GRID_SIZE * GRID_SIZE, 4)
